@@ -2,7 +2,13 @@ import os
 from dotenv import load_dotenv
 import asyncio
 import google
+import warnings
+import logging
 
+from rich.console import Console
+from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.text import Text
 
 from base_agent import BaseAgent
 
@@ -12,7 +18,10 @@ from google.adk.runners import InMemoryRunner
 from google.adk.tools import AgentTool, FunctionTool, google_search
 from google.genai import types
 
+console = Console()
 
+logging.getLogger("google.genai").setLevel(logging.ERROR)
+warnings.filterwarnings("ignore", message=".*non-text parts.*")
 load_dotenv()
 
 if not os.getenv("GOOGLE_API_KEY"):
@@ -74,8 +83,23 @@ class ResearchAgent(BaseAgent):
 if __name__ == "__main__":
 
     research_agent = ResearchAgent()
+
+    console.rule("[bold green]Research Agent[/bold green]")
+    console.print('[bold] Ask your question :[/bold]', end= " ")
     user_input = input()
-    asyncio.run(research_agent.run(user_input))
+
+    if user_input:
+        with console.status("[bold green]L'équipe d'agents travaille...[/bold green]", spinner="dots"):
+            result = asyncio.run(research_agent.run(user_input))
+        console.print("\n")
+        console.print(Panel(Markdown(result), title="📝 RÉSULTAT FINAL", border_style="cyan"))
+
+    else: 
+        console.print('You did not write anything')
+
+
+
+    
 
 
 
