@@ -10,7 +10,7 @@ from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
 
-from base_agent import BaseAgent
+from abstract_agent import AbstractAgent
 
 from google.adk.agents import Agent, SequentialAgent, ParallelAgent, LoopAgent
 from google.adk.models.google_llm import Gemini
@@ -38,7 +38,7 @@ retry_config=types.HttpRetryOptions(
 )
 
 
-class ResearchAgent(BaseAgent):
+class ResearchAgent(AbstractAgent):
 
     def __init__(self):
         super().__init__()
