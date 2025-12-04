@@ -52,13 +52,16 @@ class ResearchAgent(BaseAgent):
                                 1. First, you MUST call the `researcher` tool to find relevant information on the topic provided by the user.
                                 2. Next, after receiving the research findings, you MUST call the `summarizer` tool to create a concise summary.
                                 3. Finally, present the final summary clearly to the user as your response.""",
-                                tools = [AgentTool(ResearchAgent.research_agent), AgentTool(ResearchAgent.summarize_agent)],
+                                tools = [AgentTool(self.research_agent), AgentTool(self.summary_agent)],
                                 )   
 
 
+    async def run(self, input : str) -> str :
+        
+        runner = InMemoryRunner(agent=self.root_agent)
+        response = await runner.run_debug(self.input)
 
-
-
-    async def main():
-        pass
+        return response
+    
+    
 
