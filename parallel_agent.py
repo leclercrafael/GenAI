@@ -37,7 +37,7 @@ retry_config=types.HttpRetryOptions(
     http_status_codes=[429, 500, 503, 504], # Retry on these HTTP errors
 )
 
-class ParallelAgent(AbstractAgent);
+class ParallelAgentResearcher(AbstractAgent):
     
     def __init__(self):
         super().__init__()
@@ -83,9 +83,49 @@ class ParallelAgent(AbstractAgent);
                                     Tech news : {tech_news}
 
                                     Health news : {health_news}
-                                    
+
                                     Finance news : {finance_news}
+
+                                    The final summary should highlight the key informations and the surprising connections.
+                                    Final summary should be around 200 words.
                                     ''',
                                     tools=[google_search],
                                     output_key='finance_news'
         )
+
+        self.ParallelResearch= ParallelAgent(
+                                            name='ParallelResearch',
+                                            sub_agents = [self.FinanceResearcher, self.HealthResearcher, self.TechResearcher]
+        )
+
+        self.RootAgent = SequentialAgent(
+                                        name='RootAgent',
+                                        sub_agents=[self.ParallelResearch, self.AgregatorAgent]
+        )
+
+
+
+    async def run(self, input : str) -> str :
+        
+            runner = InMemoryRunner(agent=self.RootAgent)
+            response = await runner.run_debug(input)
+
+            return response
+    
+
+if __name__ == "__main__":
+
+    research_agent = ParallelAgentResearcher()
+
+    console.rule("[bold green]Research Agent[/bold green]")
+    console.print('[bold] Ask your question :[/bold]', end= " ")
+    user_input = "Run the daily executive briefing on Tech, Health, and Finance"
+
+    if user_input:
+        with console.status("[bold green]Agents are working...[/bold green]", spinner="dots"):
+            console.print("\n")
+            asyncio.run(research_agent.run(user_input))
+
+
+    else: 
+        console.print('You did not write anything')
