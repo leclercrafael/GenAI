@@ -1,2 +1,3 @@
-# 5-Day-AI-Agents-Intensive-Google-x-Kaggle
-5-Day AI Agents Intensive Google x Kaggle
+# GenAI repo
+Testing agentic architecture to solve problems
+Base of my work on knowledge graph
